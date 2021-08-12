@@ -87,6 +87,77 @@ test("blog added without title and url return code 400", async () => {
     .expect("Content-Type", /application\/json/);
 });
 
+describe("viewing a specific blog", () => {
+  test("succeeds with a valid id", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+
+    const blogToView = blogsAtStart[0];
+
+    const resultBlog = await api
+      .get(`/api/blogs/${blogToView.id}`)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const processedBlogToView = JSON.parse(JSON.stringify(blogToView));
+
+    expect(resultBlog.body).toEqual(processedBlogToView);
+  });
+
+  test("fails with statuscode 404 if note does not exist", async () => {
+    const validNonexistingId = await helper.nonExistingId();
+
+    console.log(validNonexistingId);
+
+    await api.get(`/api/blogs/${validNonexistingId}`).expect(404);
+  });
+
+  test("fails with statuscode 400 id is invalid", async () => {
+    const invalidId = "5a3d5da59070081a82a3445";
+
+    await api.get(`/api/blogs/${invalidId}`).expect(400);
+  });
+});
+
+describe("deletion of a blog", () => {
+  test("succeeds with status code 204 if id is valid", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+
+    const authors = blogsAtEnd.map((blog) => blog.author);
+
+    expect(authors).not.toContain(blogToDelete.author);
+  });
+});
+
+describe("updating a blog", () => {
+  test("correctly updates the blog likes", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    const newBlog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: blogToUpdate.likes + 1,
+    };
+    const returnedBlog = await api
+      .put(`/api/blogs/${blogToUpdate.id}`, blogToUpdate.id)
+      .send(newBlog)
+      .expect(200);
+
+    console.log(returnedBlog.body);
+    expect(returnedBlog.body.likes).toBe(5);
+    const blogsAtEnd = await helper.blogsInDb();
+    console.log(blogsAtEnd);
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
