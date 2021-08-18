@@ -75,9 +75,9 @@ blogRouter.post("/", async (request, response) => {
 blogRouter.delete("/:id", async (request, response) => {
   const removeBlog = await Blog.findById(request.params.id);
   const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  const testUser = request.user;
-  logger.info(testUser);
-  return;
+  // const testUser = request.user;
+  // logger.info(testUser);
+  // return;
   if (!removeBlog || !decodedToken.id) {
     return response.status(401).json({ error: "token error or user error" });
   }

@@ -42,27 +42,27 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
-const userExtractor = (request, response, next) => {
-  // if (request.token) {
-  //   const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  //   if (!decodedToken.id) {
-  //     return response.status(401).json({ error: "token error or user error" });
-  //   }
-  //   const user = User.findById(decodedToken.id);
-  //   if (!user) {
-  //     return response.status(401).json({ error: "invalid user" });
-  //   }
-  //   request.user = user;
-  // }
-  logger.info(request.body);
-
-  next();
-};
+// const userExtractor = (request, response, next) => {
+//   // if (request.token) {
+//   //   const decodedToken = jwt.verify(request.token, process.env.SECRET);
+//   //   if (!decodedToken.id) {
+//   //     return response.status(401).json({ error: "token error or user error" });
+//   //   }
+//   //   const user = User.findById(decodedToken.id);
+//   //   if (!user) {
+//   //     return response.status(401).json({ error: "invalid user" });
+//   //   }
+//   //   request.user = user;
+//   // }
+//   logger.info(request.body);
+//
+//   next();
+// };
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
-  userExtractor,
+  // userExtractor,
 };
