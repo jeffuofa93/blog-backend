@@ -8,7 +8,7 @@
     "dev": "NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
-    "build:ui": "rm -rf build && cd ../frontend-blog && npm run build --prod && cp -r build ../backend-blog",
+    "build:ui": "rm -rf build && cd ../frontend-blog && git add . && git commit -m uibuild && git push && npm run build --prod && cp -r build ../backend-blog",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
     "logs:prod": "heroku logs --tail"
